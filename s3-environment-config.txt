@@ -1,0 +1,74 @@
+# RAGFlow Environment Configuration for AWS S3
+# Copy this content to docker/.env and update with your actual values
+
+# Storage Implementation - IMPORTANT: Set this to AWS_S3 to use S3 instead of MinIO
+STORAGE_IMPL=AWS_S3
+
+# RAGFlow Configuration
+RAGFLOW_IMAGE=infiniflow/ragflow:v0.15.0
+RAGFLOW_HOST=0.0.0.0
+SVR_HTTP_PORT=9380
+TIMEZONE=UTC
+
+# MySQL Configuration (using your existing RDS)
+MYSQL_DBNAME=legalkaki-rds
+MYSQL_USER=admin
+MYSQL_PASSWORD=legalkaki
+MYSQL_HOST=legalkaki-rds.c14i40gw8ua8.ap-southeast-5.rds.amazonaws.com
+MYSQL_PORT=3306
+MYSQL_MAX_PACKET=1073741824
+
+# AWS S3 Configuration (replace with your actual values)
+AWS_ACCESS_KEY_ID=your-aws-access-key-id
+AWS_SECRET_ACCESS_KEY=your-aws-secret-access-key
+AWS_DEFAULT_REGION=us-east-1
+S3_BUCKET_NAME=your-ragflow-bucket
+S3_PREFIX_PATH=ragflow/
+
+# Elasticsearch Configuration
+STACK_VERSION=8.11.0
+ELASTIC_PASSWORD=infini_rag_flow
+ES_PORT=1200
+ES_HOST=es01
+ES_USER=elastic
+MEM_LIMIT=4073741824
+
+# OpenSearch Configuration
+OPENSEARCH_PASSWORD=infini_rag_flow_OS_01
+OS_PORT=1201
+OS_HOST=opensearch01
+OS_USER=admin
+
+# Infinity Configuration
+INFINITY_THRIFT_PORT=23817
+INFINITY_HTTP_PORT=23820
+INFINITY_PSQL_PORT=5432
+INFINITY_HOST=infinity
+
+# Redis Configuration
+REDIS_PASSWORD=infini_rag_flow
+REDIS_PORT=6379
+REDIS_HOST=redis
+
+# Sandbox Configuration (if using)
+SANDBOX_EXECUTOR_MANAGER_IMAGE=infiniflow/sandbox-executor-manager:latest
+SANDBOX_EXECUTOR_MANAGER_PORT=9385
+SANDBOX_EXECUTOR_MANAGER_POOL_SIZE=3
+SANDBOX_BASE_PYTHON_IMAGE=infiniflow/sandbox-base-python:latest
+SANDBOX_BASE_NODEJS_IMAGE=infiniflow/sandbox-base-nodejs:latest
+SANDBOX_ENABLE_SECCOMP=false
+SANDBOX_MAX_MEMORY=256m
+SANDBOX_TIMEOUT=10s
+
+# Hugging Face Configuration (optional)
+HF_ENDPOINT=https://huggingface.co
+
+# macOS specific (set to 1 if running on macOS)
+MACOS=0
+
+# MinIO Configuration (no longer needed with S3, but kept for reference)
+# MINIO_USER=rag_flow
+# MINIO_PASSWORD=infini_rag_flow
+# MINIO_HOST=minio
+# MINIO_PORT=9000
+# MINIO_CONSOLE_PORT=9001

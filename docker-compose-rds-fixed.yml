@@ -1,0 +1,54 @@
+# Docker Compose configuration for RAGFlow with AWS RDS MySQL
+# This configuration fixes Docker networking issues for external RDS access
+
+include:
+  - ./docker/docker-compose-base.yml
+
+services:
+  ragflow:
+    # Remove MySQL dependency since we're using external RDS
+    depends_on:
+      - es01
+      - infinity
+      - redis
+    image: ${RAGFLOW_IMAGE:-infiniflow/ragflow:v0.20.5}
+    container_name: ragflow-server
+    # Use host networking to access external RDS directly
+    network_mode: host
+    ports:
+      - "9380:9380"
+    volumes:
+      - ./docker/ragflow-logs:/ragflow/logs
+      - ./docker/nginx/ragflow.conf:/etc/nginx/conf.d/ragflow.conf
+      - ./docker/nginx/proxy.conf:/etc/nginx/proxy.conf
+      - ./docker/nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./history_data_agent:/ragflow/history_data_agent
+      - ./docker/service_conf.yaml.template:/ragflow/conf/service_conf.yaml.template
+      - ./docker/entrypoint.sh:/ragflow/entrypoint.sh
+      - ./conf/service_conf.yaml:/ragflow/conf/service_conf.yaml
+    environment:
+      - TZ=UTC
+      - HF_ENDPOINT=https://huggingface.co
+      - MACOS=0
+    restart: on-failure
+
+  # Override other services to use host network as well
+  es01:
+    network_mode: host
+    ports:
+      - "1200:9200"
+
+  infinity:
+    network_mode: host
+    ports:
+      - "23817:23817"
+
+  redis:
+    network_mode: host
+    ports:
+      - "6379:6379"
+
+  # Disable MySQL service completely
+  mysql:
+    profiles:
+      - disabled

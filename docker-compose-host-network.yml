@@ -1,0 +1,44 @@
+# Docker Compose with Host Networking for RDS Access
+# This configuration allows RAGFlow to access external RDS directly
+
+version: "3.8"
+
+services:
+  ragflow:
+    image: infiniflow/ragflow:v0.20.5
+    container_name: ragflow-server
+    # Use host networking to access external RDS
+    network_mode: host
+    volumes:
+      - ./conf/service_conf.yaml:/ragflow/conf/service_conf.yaml
+      - ./docker/ragflow-logs:/ragflow/logs
+      - ./history_data_agent:/ragflow/history_data_agent
+    environment:
+      - TZ=UTC
+      - HF_ENDPOINT=https://huggingface.co
+    restart: on-failure
+    # No ports needed with host networking
+
+  # Optional: Keep Redis for caching (also with host networking)
+  redis:
+    image: valkey/valkey:8
+    container_name: ragflow-redis
+    network_mode: host
+    restart: on-failure
+    # No ports needed with host networking
+
+  # Optional: Keep OpenSearch for search functionality
+  opensearch:
+    image: hub.icert.top/opensearchproject/opensearch:2.19.1
+    container_name: ragflow-opensearch
+    network_mode: host
+    environment:
+      - node.name=opensearch01
+      - OPENSEARCH_PASSWORD=infini_rag_flow_OS_01
+      - bootstrap.memory_lock=false
+      - discovery.type=single-node
+      - xpack.security.enabled=true
+      - xpack.security.http.ssl.enabled=false
+      - xpack.security.transport.ssl.enabled=false
+    restart: on-failure
+    # No ports needed with host networking
